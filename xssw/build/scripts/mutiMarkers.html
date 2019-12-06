@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<!-- three.js library -->
+<script src="../vendor/threejs/three.js"></script>
+<!-- jsartookit -->
+<script src="../vendor/jsartoolkit5/build/artoolkit.min.js"></script>
+<script src="../vendor/jsartoolkit5/js/artoolkit.api.js"></script>
+<!-- include threex.artoolkit -->
+<script src="../vendor/threex/threex-artoolkitsource.js"></script>
+<script src="../vendor/threex/threex-artoolkitcontext.js"></script>
+<script src="../vendor/threex/threex-arbasecontrols.js"></script>
+<script src="../vendor/threex/threex-armarkercontrols.js"></script>
+<script>THREEx.ArToolkitContext.baseURL = '../'</script>
+
+<body style='margin : 0px; overflow: hidden; font-family: Monospace;'>
+<script>
+    //////////////////////////////////////////////////////////////////////////////////
+    //		Init
+    //////////////////////////////////////////////////////////////////////////////////
+
+    // init renderer
+    var renderer	= new THREE.WebGLRenderer({
+        antialias	: true,
+        alpha: true
+    });
+    renderer.setClearColor(new THREE.Color('lightgrey'), 0)
+    renderer.setSize( 640, 480 );
+    renderer.domElement.style.position = 'absolute'
+    renderer.domElement.style.top = '0px'
+    renderer.domElement.style.left = '0px'
+    document.body.appendChild( renderer.domElement );
+
+    // array of functions for the rendering loop
+    var onRenderFcts= [];
+
+    // init scene and camera
+    var scene	= new THREE.Scene();
+
+    //////////////////////////////////////////////////////////////////////////////////
+    //		Initialize a basic camera
+    //////////////////////////////////////////////////////////////////////////////////
+
+    // Create a camera
+    var camera = new THREE.Camera();
+    scene.add(camera);
+
+    ////////////////////////////////////////////////////////////////////////////////
+    //          handle arToolkitSource
+    ////////////////////////////////////////////////////////////////////////////////
+
+    var arToolkitSource = new THREEx.ArToolkitSource({
+        // to read from the webcam
+        sourceType : 'webcam',
+
+        // to read from an image
+        // sourceType : 'image',
+        // sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/images/img.jpg',
+
+        // to read from a video
+        // sourceType : 'video',
+        // sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/videos/headtracking.mp4',
+    })
+
+    arToolkitSource.init(function onReady(){
+        onResize()
+    })
+
+    // handle resize
+    window.addEventListener('resize', function(){
+        onResize()
+    })
+    function onResize(){
+        arToolkitSource.onResizeElement()
+        arToolkitSource.copyElementSizeTo(renderer.domElement)
+        if( arToolkitContext.arController !== null ){
+            arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas)
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////////////
+    //          initialize arToolkitContext
+    ////////////////////////////////////////////////////////////////////////////////
+
+    // create atToolkitContext
+    var arToolkitContext = new THREEx.ArToolkitContext({
+        cameraParametersUrl: THREEx.ArToolkitContext.baseURL + '../data/camera_para.dat',
+        detectionMode: 'mono',
+    })
+    // initialize it
+    arToolkitContext.init(function onCompleted(){
+        // copy projection matrix to camera
+        camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
+    })
+
+    // update artoolkit on every frame
+    onRenderFcts.push(function(){
+        if( arToolkitSource.ready === false )	return
+
+        arToolkitContext.update( arToolkitSource.domElement )
+    })
+
+    ;(function(){
+
+        //////////////////////////////////////////////////////////////////////////////
+        //		markerRoot1
+        //////////////////////////////////////////////////////////////////////////////
+
+        // build markerControls
+        var markerRoot1 = new THREE.Group
+        markerRoot1.name = 'marker1'
+        scene.add(markerRoot1)
+        var markerControls1 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot1, {
+            type : 'pattern',
+            patternUrl : THREEx.ArToolkitContext.baseURL + '../markerfiles/pattern-jcw2.patt',
+
+        })
+
+        console.log("markerRoot1.visible: ");console.log(markerRoot1.visible);
+        if(markerRoot1.visible)
+        {
+            console.log("jump-------------------");
+        }
+
+        // add a gizmo in the center of the marker
+        var geometry1	= new THREE.CubeGeometry(1,1,1);
+        var material1	= new THREE.MeshNormalMaterial({
+            transparent : true,
+            opacity: 0.5,
+            side: THREE.DoubleSide
+        });
+        var mesh1	= new THREE.Mesh( geometry1, material1 );
+        mesh1.position.y	= geometry1.parameters.height/2
+        markerRoot1.add( mesh1 );
+
+        //////////////////////////////////////////////////////////////////////////////
+        //		markerRoot2
+        //////////////////////////////////////////////////////////////////////////////
+
+        // build markerControls
+        var markerRoot2 = new THREE.Group
+        markerRoot2.name = 'marker2'
+        scene.add(markerRoot2)
+        var markerControls2 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot2, {
+            type : 'pattern',
+            patternUrl : THREEx.ArToolkitContext.baseURL + '../markerfiles/pattern-yw.patt',
+        })
+
+        // add a gizmo in the center of the marker
+
+        var geometry2	= new THREE.TorusKnotGeometry(0.1,0.1,16,16);
+        var material2	= new THREE.MeshNormalMaterial();
+        var mesh2	= new THREE.Mesh( geometry2, material2 );
+        mesh2.position.y	= 0.5
+        markerRoot2.add( mesh2 );
+
+        //////////////////////////////////////////////////////////////////////////////
+        //		markerRoot3
+        //////////////////////////////////////////////////////////////////////////////
+
+        // build markerControls
+        var markerRoot3 = new THREE.Group
+        markerRoot3.name = 'marker3'
+        scene.add(markerRoot3)
+        var markerControls3 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot3, {
+            type : 'pattern',
+            patternUrl : THREEx.ArToolkitContext.baseURL + '../markerfiles/pattern-rw.patt',
+        })
+
+        // add a gizmo in the center of the marker
+        var geometry3	= new THREE.OctahedronGeometry( 0.3, 0 )
+        var material3	= new THREE.MeshNormalMaterial({
+            wireframe: true
+        });
+        var mesh3	= new THREE.Mesh( geometry3, material3 );
+        markerRoot3.add( mesh3 );
+
+        //////////////////////////////////////////////////////////////////////////////
+        //		markerRoot4
+        //////////////////////////////////////////////////////////////////////////////
+
+        // build markerControls
+        var markerRoot4 = new THREE.Group
+        markerRoot4.name = 'marker4'
+        scene.add(markerRoot4)
+        var markerControls4 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot4, {
+            type : 'pattern',
+            patternUrl : THREEx.ArToolkitContext.baseURL + '../markerfiles/pattern-lhw.patt',
+        })
+
+        // add a gizmo in the center of the marker
+        var geometry4	= new THREE.OctahedronGeometry( 0.4, 0 )
+        var material4	= new THREE.MeshNormalMaterial({
+            wireframe: true
+        });
+        var mesh4	= new THREE.Mesh( geometry4, material4 );
+        markerRoot4.add( mesh4 );
+
+
+    })()
+
+
+    ;(function(){
+        var markerRoot1 = scene.getObjectByName('marker1')
+        var markerRoot2 = scene.getObjectByName('marker2')
+        var markerRoot3 = scene.getObjectByName('marker3')
+        var markerRoot4 = scene.getObjectByName('marker4')
+
+        var container = new THREE.Group
+        scene.add(container)
+
+        var isFirst1 = true;
+        var isFirst2 = true;
+        var isFirst3 = true;
+        var isFirst4 = true;
+
+        // update container.visible and scanningSpinner visibility
+        onRenderFcts.push(function(){
+            if(markerRoot1.visible && isFirst1)
+            {
+                alert("jcw recognize success!!!  continue???");
+                isFirst1 = false;
+            }
+            if(markerRoot2.visible && isFirst2)
+            {
+                alert("yw recognize success!!!  continue???");
+                isFirst2 = false;
+            }
+            if(markerRoot3.visible && isFirst3)
+            {
+                alert("rw recognize success!!!  continue???");
+                isFirst3 = false;
+            }
+            if(markerRoot4.visible && isFirst4)
+            {
+                alert("lhw recognize success!!!  continue???");
+                isFirst4 = false;
+            }
+        })
+
+
+
+    })()
+    //////////////////////////////////////////////////////////////////////////////////
+    //		render the whole thing on the page
+    //////////////////////////////////////////////////////////////////////////////////
+
+    // render the scene
+    onRenderFcts.push(function(){
+        renderer.render( scene, camera );
+    })
+
+    // run the rendering loop
+    var lastTimeMsec= null
+    requestAnimationFrame(function animate(nowMsec){
+        // keep looping
+        requestAnimationFrame( animate );
+        // measure time
+        lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
+        var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
+        lastTimeMsec	= nowMsec
+        // call each update function
+        onRenderFcts.forEach(function(onRenderFct){
+            onRenderFct(deltaMsec/1000, nowMsec/1000)
+        })
+    })
+</script>
+
+<!-- Scanning animation when the marker are not visible -->
+<!--<div class="scanningSpinner">-->
+<!--    <label>-->
+<!--        Scanning-->
+<!--    </label>-->
+<!--    <div class="rect1"></div>-->
+<!--    <div class="rect2"></div>-->
+<!--    <div class="rect3"></div>-->
+<!--</div>-->
+<!--<style>-->
+<!--    .scanningSpinner {-->
+<!--        margin: 100px auto;-->
+<!--        height: 40px;-->
+<!--        text-align: center;-->
+<!--    }-->
+
+<!--    .scanningSpinner label {-->
+<!--        display: block;-->
+<!--        color: #333;-->
+<!--        font-size: 200%;-->
+<!--    }-->
+
+<!--    .scanningSpinner > div {-->
+<!--        background-color: #333;-->
+<!--        height: 100%;-->
+<!--        width: 6px;-->
+<!--        display: inline-block;-->
+
+<!--        -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;-->
+<!--        animation: sk-stretchdelay 1.2s infinite ease-in-out;-->
+<!--    }-->
+
+<!--    .scanningSpinner .rect2 {-->
+<!--        -webkit-animation-delay: -1.1s;-->
+<!--        animation-delay: -1.1s;-->
+<!--    }-->
+
+<!--    .scanningSpinner .rect3 {-->
+<!--        -webkit-animation-delay: -1.0s;-->
+<!--        animation-delay: -1.0s;-->
+<!--    }-->
+
+<!--    @-webkit-keyframes sk-stretchdelay {-->
+<!--        0%, 40%, 100% { -webkit-transform: scaleY(0.4) }-->
+<!--        20% { -webkit-transform: scaleY(1.0) }-->
+<!--    }-->
+
+<!--    @keyframes sk-stretchdelay {-->
+<!--        0%, 40%, 100% {-->
+<!--            transform: scaleY(0.4);-->
+<!--            -webkit-transform: scaleY(0.4);-->
+<!--        }-->
+<!--        20% {-->
+<!--            transform: scaleY(1.0);-->
+<!--            -webkit-transform: scaleY(1.0);-->
+<!--        }-->
+<!--    }-->
+<!--</style>-->
+
+</body>

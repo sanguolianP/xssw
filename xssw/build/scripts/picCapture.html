@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>摄像头拍照</title>
+</head>
+<body>
+<video id="video" width="480" height="320" autoplay></video>
+<div>
+    <button id="capture">拍照</button>
+    <button id="save">保存</button>
+    <button id="back" onclick="window.open('index.html','_self')">返回</button>
+    <button id="flip-button">转换摄像头</button>
+    <button id="other" onclick="window.open('camGrabFrames.html','_self')">其他模式</button>
+    <button id="imgDisplay">显示图片</button>
+</div>
+
+<!--<view style='width:0px;height:0px;overflow:hidden;'>-->
+<!--    <canvas id="canvas" width="480" height="320"></canvas>-->
+<!--</view>-->
+<!--<canvas id="canvas" ></canvas>-->
+<canvas id="canvas" width="480" height="320"></canvas>
+<canvas id="canvas2" width="480" height="320"></canvas>
+<script>
+    //访问用户媒体设备的兼容方法
+    function getUserMedia(constraints, success, error) {
+        if (navigator.mediaDevices.getUserMedia) {
+            //最新的标准API
+            navigator.mediaDevices.getUserMedia(constraints).then(success).catch(error);
+        } else if (navigator.webkitGetUserMedia) {
+            //webkit核心浏览器
+            navigator.webkitGetUserMedia(constraints,success, error)
+        } else if (navigator.mozGetUserMedia) {
+            //firfox浏览器
+            navigator.mozGetUserMedia(constraints, success, error);
+        } else if (navigator.getUserMedia) {
+            //旧版API
+            navigator.getUserMedia(constraints, success, error);
+        }
+    }
+
+    var video = document.getElementById('video');
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    var currentImg;
+    var front = false;
+    var imgCapture;
+    var img = new Image();
+
+    function success(stream) {
+        //兼容webkit核心浏览器
+        let CompatibleURL = window.URL || window.webkitURL;
+        //将视频流设置为video元素的源
+        console.log(stream);
+
+        //video.src = CompatibleURL.createObjectURL(stream);
+        video.srcObject = stream;
+        video.play();
+
+
+    }
+
+    function error(error) {
+        console.log(`访问用户媒体设备失败${error.name}, ${error.message}`);
+        alert( "Capture video failed: " + error.message );
+    }
+
+
+    if (navigator.mediaDevices.getUserMedia || navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia) {
+        //调用用户媒体设备, 访问摄像头
+
+        getUserMedia({video: {width: 480, height: 320, facingMode:(front? "user" : "environment")}}, success, error);
+        //{width: 480, height: 320},{facingMode:{exact:"environment"}},{facingMode:(front? "user" : "environment")}
+
+    } else {
+        alert('不支持访问用户媒体');
+    }
+
+    document.getElementById('flip-button').onclick = function() {front = !front; console.log(front)};
+
+    document.getElementById('capture').addEventListener('click', function () {
+        var w = video.width;
+        var h = video.height;
+        img.width  = w;
+        img.height = h;
+        context.drawImage(video, 0, 0, w, h);
+        var url = canvas.toDataURL('imageCapture1/png',1);
+        console.log('url: ');console.log(url);
+        img.src = url;
+        console.log("img: ");console.log(img);
+
+    })
+
+    document.getElementById('imgDisplay').addEventListener('click', function () {
+        var canvas2 = document.getElementById("canvas2");
+        var context2 = canvas2.getContext('2d');
+        context2.drawImage(img,0,0,480,320);
+    })
+
+    document.getElementById('save').addEventListener('click', function () {
+        saveImage(canvas, 'capture_'+new Date().getTime()+'.png');
+        console.log(currentImg);
+    })
+
+
+    function saveImage(canvas, filename) {
+        currentImg = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
+        saveFile(currentImg, filename || 'file_'+new Date().getTime()+'.png');
+        console.log(currentImg);
+    }
+
+    function saveFile(data, filename) {
+        var save_link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+        save_link.href = data;
+        save_link.download = filename;
+
+        var event = document.createEvent('MouseEvents');
+        event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        save_link.dispatchEvent(event);
+        console.log(currentImg);
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<meta name="viewport"
+      content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>形色识纹</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 微软雅黑;
+        }
+
+        header {
+            height: 60px;
+            line-height: 60px;
+            width: 100%;
+            color: #fff;
+            font-family: "黑体";
+            font-weight: 200;
+            font-size: 20px;
+            /*背景色渐变*/
+            background: linear-gradient(to bottom right, #6e77ff, #a2c7ff);
+        }
+
+         #content {
+           
+        }
+
+        .menu {
+            display: block;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 70px;
+            color: #474747;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+            background-color: #fff;
+        }
+
+        .subMenu {
+            width: 50%;
+            float: left;
+            cursor: pointer;
+        }
+
+        .menu_name {
+            height: 30px;
+            width: 100%;
+            line-height: 30px;
+        }
+
+        img.menu_img {
+            height: 35px;
+            width: 35px;
+        }
+
+        img {
+            vertical-align: middle;
+            border: 0;
+        }
+
+        .active {
+            color: #FFA129;
+        }
+
+        .text-center {
+            text-align: center
+        }
+/********************input image**************************/
+        .file {
+            position: relative;
+            display: inline-block;
+            /*background: #D0EEFF;*/
+            background-image: url("images/xiangji.png");
+            background-size: 100% 100%;
+            /*border: 0px solid #99D3F5;
+            border-radius: 4px;*/
+            padding: 65px 75px;
+            overflow: hidden;
+            color: #1E88C7;
+            text-decoration: none;
+            text-indent: 0;
+            line-height: 20px;
+        }
+        .file input {
+            position: absolute;
+            font-size: 100px;
+            right: 0;
+            top: 0;
+            opacity: 0;
+        }
+
+        p.bottomTitlt{
+            margin: 0;
+            letter-spacing: 2px;
+            padding:  0;
+        }
+        .search{
+            width: 150px;
+            height: 150px;
+            /*background: deeppink;
+            margin: 10 auto;*/
+            margin: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            
+            /*position: absolute;
+            top: 200px;*/
+        }
+
+        /********************************************/
+        #services {
+    /*background: #313131 url(../images/bg.jpg) no-repeat center;*/
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    padding-top: 5rem;
+    padding-bottom: 12rem;
+    color: white;
+    position: relative;
+}
+#services .overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 430px;
+    background: #151515;
+    opacity: .9;
+}
+
+
+#services .section-intro h1 {
+    color: white;
+}
+#services .section-intro h5 {
+    color: #FF0077;
+}
+
+.services-content {
+    max-width: 1200px;
+}
+.services-list {
+    margin-top: 1.2rem;
+    text-align: center;
+}
+
+.services-list h3 {
+    color: #FFFFFF;
+}
+
+.owl-carousel .owl-item {
+    float: left;
+}
+
+/* fix */
+.owl-carousel .owl-wrapper, .owl-carousel .owl-item {
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    -webkit-transform: translate3d(0, 0, 0);
+    -moz-transform: translate3d(0, 0, 0);
+    -ms-transform: translate3d(0, 0, 0);
+}
+.owl-carousel .owl-wrapper-outer {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+    </style>
+    <script src="../js/jquery-1.11.2.min.js"></script>
+</head>
+<body onload="initSize()" onresize="initSize()">
+
+<!--top-->
+<header class="text-center">形色识纹</header>
+<!--content-->
+<div id="content" style="text-align: center; width: 100%;height: 100%; display: block;">
+     <img src="images/saoyisao.png" title="扫一扫" height=150 width=150 onclick="window.open('mutiMarkers.html','_self')" style="position: relative;top: 60px">
+     
+     <!--<img src="xiangji.png" title="相机" height=40% width=40% style="position: relative;top: 130px">-->
+    <div id="search_img" class="search" onclick="identify_img('show_img')" style="display: block;">
+        <a href="javaScript:;" class="file">
+        <p class="bottomTitlt"></p>
+        <img src=" " alt=""/>
+        <input type="file"  placeholder="   " onchange="show(this)">
+        </a>
+    </div>
+</div>
+    <div id="show_img" style="width: 150px;height: 150px;margin: 0 auto;text-align: center;display: none;">
+        <p class="showFileName">
+        <img id="img" src=""></p>
+        <script src="https://code.jquery.com/jquery-3.2.0.min.js"></script>
+        <img src="images/shib_button.png" width="150px" height="50px" onclick="identify_result('search_result')">  
+    </div>
+     
+
+<div id="search_result" style="display: none;">
+<section id="services">
+
+        
+        <div class="overlay"></div>
+
+        <!--<div class="row services-content">-->
+
+        <div id="owl-slider" class="owl-carousel services-list">
+
+            <div class="service">   
+
+                <span class="icon"><i class="icon-earth"></i></span>            
+
+                <div class="service-content">   
+
+                     <h3>结果1</h3>
+                     <img src="images/01.jpg" width="150px" height="150px">
+                </div>               
+
+                </div> <!-- /service -->
+
+                <div class="service">   
+
+                    <span class="icon"><i class="icon-window"></i></span>                          
+                <div class="service-content">   
+                    <h3>结果2</h3>  
+                    <img src="images/01.jpg" width="150px" height="150px">
+
+                </div>                            
+
+               </div> <!-- /service -->
+
+               <div class="service">
+
+                <span class="icon"><i class="icon-paint-brush"></i></span>                  
+
+                <div class="service-content">
+
+                    <h3>结果3</h3>
+                    <img src="images/01.jpg" width="150px" height="150px"> 
+
+                </div>                                 
+
+               </div> <!-- /service -->
+
+                <div class="service">
+
+                    <span class="icon"><i class="icon-toggles"></i></span>                
+
+                <div class="service-content">
+
+                    <h3>结果4</h3>
+                    <img src="images/01.jpg" width="150px" height="150px">
+                    
+                </div>                
+
+                </div> <!-- /service -->
+
+               <div class="service">
+
+                <span class="icon"><i class="icon-image"></i></span>                
+
+                <div class="service-content">
+
+                    <h3>结果5</h3>
+                    <img src="images/01.jpg" width="150px" height="150px">
+                    
+
+                </div>                 
+
+               </div> <!-- /service -->
+
+               <div class="service">
+
+                <span class="icon"><i class="icon-chat"></i></span>                
+
+                <div class="service-content">
+
+                    <h3>结果6</h3>
+                    <img src="images/result.jpg" width="150px" height="150px" onclick="">
+                        
+                </div>                 
+
+               </div> <!-- /service -->
+
+          <!--</div>  /services-list -->
+        
+    <!--</div>  /services-content -->
+        
+    </section>
+    <script src="js/jquery-2.1.3.min.js"></script>
+   <script src="js/plugins.js"></script>
+   <script src="js/main.js"></script>      
+</div>
+<!--bottom-->
+<div id="menu" class="menu">
+    <div id="one" class="subMenu text-center" onclick="window.open('index.html','_self')">
+        <img class="menu_img" data-imgname="shibi" src="images/charge/shib01.png" />
+        
+        <div class="menu_name">识别</div>
+    </div>
+    <div id="two" class="subMenu text-center" onclick="window.open('user.html','_self')">
+        <img class="menu_img" data-imgname="use" src="images/charge/user.jpg" />
+        <div class="menu_name">用户</div>
+
+    </div>
+ 
+</div>
+
+</body>
+<script>
+  /*  //$(function () {});
+    $(document).ready(function () {
+        //添加图片
+        $("div .subMenu>img").each(function () {
+            var name = $(this).attr("data-imgname");
+            var src = "../images/charge/" + name + ".png"
+            //设置img的属性和值。
+            $(this).attr("src", src);
+        });
+
+        //点击事件
+        $("div .subMenu").click(function () {
+            // 取消当前激活状态
+            var $img = $(".active>img");
+            //返回被选元素的属性值
+            var name = $img.attr("data-imgname");
+            var src = "../images/charge/" + name + ".png";
+            $img.attr("src", src);
+            $(".active").removeClass("active");
+
+            // 添加新状态
+            $(this).addClass("active");
+            //找到所有 div(subMenu) 的子元素(img)
+            $img = $(this).children("img");
+            name = $img.attr("data-imgname");
+            src = "../images/charge/" + name + "_active.png";
+            //设置img的属性和值。
+            $img.attr("src", src);
+
+            //content根据点击按钮加载不同的html
+            var page = $(this).attr("data-src");
+            if(page){
+                $("#content").load("../html/" + page)
+            }
+        });
+
+        // 自动点击第一个菜单
+        $("div .subMenu")[0].click();
+    });
+*/
+    /*content高度*/
+    function initSize() {
+        var height = $(window).height() - $("header").height() - $("#description").height() - $("#menu").height();
+        $("#content").height(height + "px");
+    }
+    function show(file){    
+                var reader = new FileReader();  // 实例化一个FileReader对象，用于读取文件
+                var img = document.getElementById('img');   // 获取要显示图片的标签
+                
+                //读取File对象的数据
+                reader.onload = function(evt){
+                    img.width  =  "150";
+                    img.height =  "150";
+                    img.src = evt.target.result;
+                }
+                reader.readAsDataURL(file.files[0]);
+            } 
+
+     function identify_img(id)
+    {
+        var target=document.getElementById(id);
+        if(target.style.display=="none"){
+            target.style.display="";
+            document.getElementById('content').style.display="none";
+            /*document.getElementById('search_result').style.display="";*/
+            
+        }else{
+            target.style.display="none";
+            document.getElementById('content').style.display="";
+        }
+
+    }
+    function identify_result(id)
+    {
+        var target=document.getElementById(id);
+        if(target.style.display=="none"){
+            target.style.display="";
+            /*document.getElementById('content').style.display="none";*/
+            /*document.getElementById('search_result').style.display="";*/
+            
+        }else{
+            target.style.display="none";
+            /*document.getElementById('content').style.display="";*/
+        }
+    }       
+</script>
+
+</html>
