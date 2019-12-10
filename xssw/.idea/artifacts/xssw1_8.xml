@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="xssw1.8">
+    <output-path>$PROJECT_DIR$/out/artifacts/xssw1_8</output-path>
+    <root id="archive" name="xssw1.8.war">
+      <element id="dir-copy" path="$PROJECT_DIR$" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes" />
+      </element>
+    </root>
+  </artifact>
+</component>
