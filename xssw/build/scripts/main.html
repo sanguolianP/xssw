@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
@@ -37,6 +36,33 @@
     var onRenderFcts= [];
     // init scene and camera
     var scene = new THREE.Scene();
+
+    var light1 = new THREE.DirectionalLight(0xffffff,0.2);
+    light1.position.set(0,10,10);
+    var light2 = new THREE.DirectionalLight(0xffffff,0.2);
+    light2.position.set(0,10,-10);
+    var light3 = new THREE.DirectionalLight(0xffffff,0.2);
+    light3.position.set(10,10,0);
+    var light4 = new THREE.DirectionalLight(0xffffff,0.2);
+    light4.position.set(-10,10,0);
+
+    var light5 = new THREE.DirectionalLight(0xffffff,0.2);
+    light5.position.set(0,30,0);
+
+    light1.castShadow = true;
+    light2.castShadow = true;
+    light3.castShadow = true;
+    light4.castShadow = true;
+    light5.castShadow = true;
+    scene.add(light1);
+    scene.add(light2);
+    scene.add(light3);
+    scene.add(light4);
+    scene.add(light5);
+
+    //环境光设置
+    var ambilight = new THREE.AmbientLight(0xffffff,0.2);
+    scene.add(ambilight);
 
     // Create a camera
     var camera = new THREE.Camera();
@@ -150,6 +176,8 @@
         })
     })
 
+
+
     var onProgress = function ( xhr ) {
 
         if ( xhr.lengthComputable ) {
@@ -161,35 +189,38 @@
         }
 
     };
-
-
-
     var onError = function ( xhr ) { };
 
-    var mtlLoader = new THREE.MTLLoader();
+    var loadOBJbyName = function (id,xScale,yScale,zScale) {
 
-    mtlLoader.setPath( '../../obj/' );
+        var mtlLoader = new THREE.MTLLoader();
 
-    mtlLoader.load( 'jj.mtl', function( materials ) {
+        mtlLoader.setPath( '../../obj/' );
 
-        materials.preload();
+        mtlLoader.load( id+ '.mtl', function( materials ) {
 
-        var objLoader = new THREE.OBJLoader();
+            materials.preload();
 
-        objLoader.setMaterials( materials );
+            var objLoader = new THREE.OBJLoader();
 
-        objLoader.setPath( '../../obj/' );
+            objLoader.setMaterials( materials );
 
-        objLoader.load( 'jj.obj', function ( object ) {
+            objLoader.setPath( '../../obj/' );
 
-            obj=object;
-            scene.add( object );
-            object.position.set(0,0,0);
-            object.scale.set(0.0001,0.0001,0.0001);
-            var axes=new THREE.AxisHelper(10);
-            scene.add(axes);
-        }, onProgress, onError );
-    });
+            objLoader.load( id+ '.obj', function ( object ) {
+
+                obj=object;
+                scene.add( object );
+                object.position.set(0,0,0);
+                object.scale.set(xScale,yScale,zScale);
+
+                var axes=new THREE.AxisHelper(10);
+                scene.add(axes);
+            }, onProgress, onError );
+        });
+    }
+
+    loadOBJbyName('lianhua', 2, 2, 2);
 
 </script>
 <p>Hello World</p>

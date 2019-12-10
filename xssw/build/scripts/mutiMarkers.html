@@ -1,12 +1,17 @@
 <!DOCTYPE html>
+
 <meta charset="utf-8" name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
 <!-- three.js library -->
 <script src="../vendor/threejs/three.js"></script>
-
-
 <!-- ar.js lib -->
 <script src="../vendor/arjs/ar.js"></script>
 <script>THREEx.ArToolkitContext.baseURL = '../'</script>
+<!--obj loader-->
+<script src="../vendor/MTLLoader.js"></script>
+<script src="../vendor/OBJLoader.js"></script>
+
+
 <head>
     <style>
         body {
@@ -93,15 +98,18 @@
     </style>
 </head>
 
+
 <body style='margin : 0px; overflow: hidden; font-family: Monospace;'>
+
 <div id="back">
     <img height=50 width=50 src="images/back.png" onclick="window.open('index.html','_self')">
 </div>
+
 <div style="width: 100%;height: 100%">
     <img style="width: 400px;height: 400px;position: absolute;top: 0;bottom: 0;left: 0;right: 0;margin: auto;" src="images/biankuang.png">
 </div>
-<!--/**************************tanchuang***********************************/-->
 
+<!--/**************************tanchuang***********************************/-->
 <div id="lianwen" class="dislog" style="display:none;">
     <!--内容-->
     <div class="dis_cont">
@@ -182,22 +190,6 @@
     </div>
 
 </div>
-<div id="yingxi" class="dislog" style="display:none;">
-    <!--内容-->
-    <div class="dis_cont">
-        <div class="cont_dis">
-            婴戏纹识别成功
-        </div>
-
-        <div class="dis_bott">
-            <label class="left_name" onclick="cances()">进行AR体验</label>
-            <label class="right_name" onclick="window.open('yingxi.html')">查看纹样介绍</label>
-
-        </div>
-
-    </div>
-
-</div>
 <div id="ruyi" class="dislog" style="display:none;">
     <!--内容-->
     <div class="dis_cont">
@@ -263,7 +255,6 @@
 
 </div>
 <script type="text/javascript" src="js/jquery-2.1.3.min.js" ></script>
-
 <script>
     /********************************弹窗***************************************/
     function shows(id){
@@ -290,6 +281,7 @@
     //		Init
     //////////////////////////////////////////////////////////////////////////////////
 
+    var obj;
     // init renderer
     var renderer	= new THREE.WebGLRenderer({
         antialias	: true,
@@ -307,6 +299,34 @@
 
     // init scene and camera
     var scene	= new THREE.Scene();
+
+    //光照设置
+    var light1 = new THREE.DirectionalLight(0xffffff,0.2);
+    light1.position.set(0,10,10);
+    var light2 = new THREE.DirectionalLight(0xffffff,0.2);
+    light2.position.set(0,10,-10);
+    var light3 = new THREE.DirectionalLight(0xffffff,0.2);
+    light3.position.set(10,10,0);
+    var light4 = new THREE.DirectionalLight(0xffffff,0.2);
+    light4.position.set(-10,10,0);
+
+    var light5 = new THREE.DirectionalLight(0xffffff,0.2);
+    light5.position.set(0,30,0);
+
+    light1.castShadow = true;
+    light2.castShadow = true;
+    light3.castShadow = true;
+    light4.castShadow = true;
+    light5.castShadow = true;
+    scene.add(light1);
+    scene.add(light2);
+    scene.add(light3);
+    scene.add(light4);
+    scene.add(light5);
+
+    //环境光设置
+    var ambilight = new THREE.AmbientLight(0xffffff,0.2);
+    scene.add(ambilight);
 
     //////////////////////////////////////////////////////////////////////////////////
     //		Initialize a basic camera
@@ -369,6 +389,47 @@
 
         arToolkitContext.update( arToolkitSource.domElement )
     })
+
+    //读取OBJ模型
+    var onProgress = function ( xhr ) {
+
+        if ( xhr.lengthComputable ) {
+
+            var percentComplete = xhr.loaded / xhr.total * 100;
+
+            console.log( Math.round(percentComplete, 2) + '% downloaded' );
+        }
+    };
+    var onError = function ( xhr ) { };
+    var loadOBJbyName = function (id,markerroot,xScale,yScale,zScale) {
+
+            var mtlLoader = new THREE.MTLLoader();
+
+            mtlLoader.setPath( '../../obj/' );
+
+            mtlLoader.load( id+ '.mtl', function( materials ) {
+
+                materials.preload();
+
+                var objLoader = new THREE.OBJLoader();
+
+                objLoader.setMaterials( materials );
+
+                objLoader.setPath( '../../obj/' );
+
+                objLoader.load( id+ '.obj', function ( object ) {
+
+                    obj=object;
+                    markerroot.add( object );
+                    object.position.set(0,0,0);
+                    object.scale.set(xScale,yScale,zScale);
+
+                    var axes=new THREE.AxisHelper(10);
+                    markerroot.add(axes);
+                }, onProgress, onError );
+            });
+        }
+
 
     //建立标签和模型
     ;(function(){
@@ -459,13 +520,7 @@
             patternUrl : THREEx.ArToolkitContext.baseURL + '../markerfiles/pattern-jcw2.patt',
         })
 
-        // add a gizmo in the center of the marker
-        var geometry4	= new THREE.OctahedronGeometry( 0.4, 0 )
-        var material4	= new THREE.MeshNormalMaterial({
-            wireframe: true
-        });
-        var mesh4	= new THREE.Mesh( geometry4, material4 );
-        markerRoot4.add( mesh4 );
+        loadOBJbyName('juancao', markerRoot4,0.005,0.005,0.005);
 
         //////////////////////////////////////////////////////////////////////////////
         //		markerRoot5 莲花纹
@@ -480,6 +535,8 @@
             patternUrl : THREEx.ArToolkitContext.baseURL + '../markerfiles/pattern-lhw.patt',
         })
 
+        loadOBJbyName('lianhua', markerRoot5,2,2,2);
+
         //////////////////////////////////////////////////////////////////////////////
         //		markerRoot6 龙纹
         //////////////////////////////////////////////////////////////////////////////
@@ -492,6 +549,8 @@
             type : 'pattern',
             patternUrl : THREEx.ArToolkitContext.baseURL + '../markerfiles/pattern-longw.patt',
         })
+
+        loadOBJbyName('long', markerRoot6,0.0004,0.0004,0.0004);
 
         //////////////////////////////////////////////////////////////////////////////
         //		markerRoot7 如意纹
@@ -520,7 +579,7 @@
         })
 
         //////////////////////////////////////////////////////////////////////////////
-        //		markerRoot9 婴嬉纹
+        //		markerRoot9 云纹
         //////////////////////////////////////////////////////////////////////////////
 
         // build markerControls
@@ -529,21 +588,10 @@
         scene.add(markerRoot9)
         var markerControls9 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot9, {
             type : 'pattern',
-            patternUrl : THREEx.ArToolkitContext.baseURL + '../markerfiles/pattern-yxw.patt',
-        })
-
-        //////////////////////////////////////////////////////////////////////////////
-        //		markerRoot10 云纹
-        //////////////////////////////////////////////////////////////////////////////
-
-        // build markerControls
-        var markerRoot10 = new THREE.Group
-        markerRoot10.name = 'marker10'
-        scene.add(markerRoot10)
-        var markerControls10 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot10, {
-            type : 'pattern',
             patternUrl : THREEx.ArToolkitContext.baseURL + '../markerfiles/pattern-yw.patt',
         })
+
+        loadOBJbyName('yun', markerRoot9,0.003,0.003,0.003);
 
     })()
 
@@ -559,7 +607,6 @@
         var markerRoot7 = scene.getObjectByName('marker7')
         var markerRoot8 = scene.getObjectByName('marker8')
         var markerRoot9 = scene.getObjectByName('marker9')
-        var markerRoot10 = scene.getObjectByName('marker10')
 
         // var container = new THREE.Group
         // scene.add(container)
@@ -573,7 +620,6 @@
         var isFirst7 = true;
         var isFirst8 = true;
         var isFirst9 = true;
-        var isFirst10 = true;
 
 
         // update container.visible and scanningSpinner visibility
@@ -620,13 +666,8 @@
             }
             if(markerRoot9.visible && isFirst9)
             {
-                shows('yingxi');
-                isFirst9 = false;
-            }
-            if(markerRoot10.visible && isFirst10)
-            {
                 shows('yun');
-                isFirst10 = false;
+                isFirst9 = false;
             }
         })
 
@@ -656,6 +697,10 @@
             onRenderFct(deltaMsec/1000, nowMsec/1000)
         })
     })
+
+
+
+
 </script>
 
 

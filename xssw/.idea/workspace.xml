@@ -21,7 +21,8 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$/Desktop/WebARPro/ar.js_test-master" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Desktop/WebARDemo-master" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -51,7 +52,8 @@
       <updated>1575638011549</updated>
       <workItem from="1575638012876" duration="26000" />
       <workItem from="1575638105909" duration="246000" />
-      <workItem from="1575962561484" duration="3521000" />
+      <workItem from="1575962561484" duration="4042000" />
+      <workItem from="1575975932967" duration="6647000" />
     </task>
     <servers />
   </component>
