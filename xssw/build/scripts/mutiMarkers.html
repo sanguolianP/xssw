@@ -291,7 +291,7 @@
 <script>
     /********************************弹窗***************************************/
     function shows(id){
-        // $(".dislog").css("display","block");
+        $(".dislog").css("display","block");
         var target=document.getElementById(id);
         if(target.style.display=="none"){
             target.style.display="";
@@ -343,8 +343,8 @@
     var light4 = new THREE.DirectionalLight(0xffffff,0.2);
     light4.position.set(-10,10,0);
 
-    var light5 = new THREE.DirectionalLight(0xffffff,0.2);
-    light5.position.set(0,30,0);
+    var light5 = new THREE.DirectionalLight(0xffffff,0.4);
+    light5.position.set(0,40,40);
 
     light1.castShadow = true;
     light2.castShadow = true;
@@ -481,11 +481,6 @@
 
         })
 
-        console.log("markerRoot1.visible: ");console.log(markerRoot1.visible);
-        if(markerRoot1.visible)
-        {
-            console.log("jump-------------------");
-        }
 
         // add a gizmo in the center of the marker
         var geometry1	= new THREE.CubeGeometry(1,1,1);
@@ -511,13 +506,6 @@
             patternUrl : THREEx.ArToolkitContext.baseURL + '../markerfiles/pattern-ftw.patt',
         })
 
-        // add a gizmo in the center of the marker
-
-        var geometry2	= new THREE.TorusKnotGeometry(0.1,0.1,16,16);
-        var material2	= new THREE.MeshNormalMaterial();
-        var mesh2	= new THREE.Mesh( geometry2, material2 );
-        mesh2.position.y	= 0.5
-        markerRoot2.add( mesh2 );
 
         //////////////////////////////////////////////////////////////////////////////
         //		markerRoot3 蝴蝶纹
@@ -532,13 +520,6 @@
             patternUrl : THREEx.ArToolkitContext.baseURL + '../markerfiles/pattern-hdw.patt',
         })
 
-        // add a gizmo in the center of the marker
-        var geometry3	= new THREE.OctahedronGeometry( 0.3, 0 )
-        var material3	= new THREE.MeshNormalMaterial({
-            wireframe: true
-        });
-        var mesh3	= new THREE.Mesh( geometry3, material3 );
-        markerRoot3.add( mesh3 );
 
         //////////////////////////////////////////////////////////////////////////////
         //		markerRoot4 卷草纹
@@ -553,7 +534,7 @@
             patternUrl : THREEx.ArToolkitContext.baseURL + '../markerfiles/pattern-jcw2.patt',
         })
 
-        loadOBJbyName('juancao', markerRoot4,0.005,0.005,0.005);
+
 
         //////////////////////////////////////////////////////////////////////////////
         //		markerRoot5 莲花纹
@@ -568,7 +549,6 @@
             patternUrl : THREEx.ArToolkitContext.baseURL + '../markerfiles/pattern-lhw.patt',
         })
 
-        loadOBJbyName('lianhua', markerRoot5,2,2,2);
 
         //////////////////////////////////////////////////////////////////////////////
         //		markerRoot6 龙纹
@@ -583,7 +563,6 @@
             patternUrl : THREEx.ArToolkitContext.baseURL + '../markerfiles/pattern-longw.patt',
         })
 
-        loadOBJbyName('long', markerRoot6,0.0004,0.0004,0.0004);
 
         //////////////////////////////////////////////////////////////////////////////
         //		markerRoot7 如意纹
@@ -624,7 +603,7 @@
             patternUrl : THREEx.ArToolkitContext.baseURL + '../markerfiles/pattern-yw.patt',
         })
 
-        loadOBJbyName('yun', markerRoot9,0.003,0.003,0.003);
+
 
     })()
 
@@ -659,33 +638,40 @@
         onRenderFcts.push(function(){
             if(markerRoot1.visible && isFirst1)
             {
+                console.log("1111");
                 shows('bajiaoxing');
+                console.log("shows");
                 isFirst1 = false;
             }
             if(markerRoot2.visible && isFirst2)
             {
                 shows('feitian');
                 isFirst2 = false;
+                loadOBJbyName('feitian', markerRoot2,0.0003,0.0003,0.0003);
             }
             if(markerRoot3.visible && isFirst3)
             {
                 shows('hudie');
                 isFirst3 = false;
+                // loadOBJbyName('hudie', markerRoot3,0.01,0.01,0.01);
             }
             if(markerRoot4.visible && isFirst4)
             {
                 shows('juancao');
                 isFirst4 = false;
+                loadOBJbyName('juancao', markerRoot4,0.005,0.005,0.005);
             }
             if(markerRoot5.visible && isFirst5)
             {
                 shows('lianwen');
                 isFirst5 = false;
+                loadOBJbyName('lianhua_1', markerRoot5,2,2,2);
             }
             if(markerRoot6.visible && isFirst6)
             {
                 shows('long');
                 isFirst6 = false;
+                // loadOBJbyName('long_1', markerRoot6,0.0005,0.0005,0.0005);
             }
             if(markerRoot7.visible && isFirst7)
             {
@@ -696,11 +682,13 @@
             {
                 shows('wanzi');
                 isFirst8 = false;
+                // loadOBJbyName('wanzi_1', markerRoot8,0.0005,0.0005,0.0005);
             }
             if(markerRoot9.visible && isFirst9)
             {
                 shows('yun');
                 isFirst9 = false;
+                // loadOBJbyName('yun_2', markerRoot9,0.0003,0.0003,0.0003);
             }
         })
 
