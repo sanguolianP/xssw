@@ -95,6 +95,36 @@
             box-sizing: border-box;
             padding: 20px 20px;
         }
+        /**************************************xuanzhuan********************************************************/
+        /* #zhezhao{
+             width: 400px;
+             height: 400px;
+             margin: 20% auto;
+
+             position: relative;
+             -webkit-animation:run 6s linear 0s infinite;
+         }*/
+        #zhezhao{
+
+              margin-top: 30%;
+
+              -webkit-animation:run 6s linear 0s infinite;
+          }
+        #zhezhao:hover{
+            -webkit-animation-play-state:paused;
+        }
+
+
+        @-webkit-keyframes run{
+            from{
+                -webkit-transform:rotate(0deg);
+            }
+            to{
+                -webkit-transform:rotate(360deg);
+            }
+        }
+        /***************************rotate*******************************/
+
     </style>
 </head>
 
@@ -104,10 +134,13 @@
 <div id="back">
     <img height=50 width=50 src="images/back.png" onclick="window.open('index.html','_self')">
 </div>
+<div>
+    <div id="zhezhao">
+        <img src="images/biankuang.png" width="100%" height="100%">
 
-<div style="width: 100%;height: 100%">
-    <img style="width: 400px;height: 400px;position: absolute;top: 0;bottom: 0;left: 0;right: 0;margin: auto;" src="images/biankuang.png">
+    </div>
 </div>
+
 
 <!--/**************************tanchuang***********************************/-->
 <div id="lianwen" class="dislog" style="display:none;">
